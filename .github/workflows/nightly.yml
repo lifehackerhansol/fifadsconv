@@ -1,0 +1,74 @@
+name: Build nightly
+
+on:
+  push:
+    branches: ["*"]
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-2019
+    name: Build Windows
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install pyinstaller
+        run: |
+          py -m pip install -r requirements.txt
+      - name: Create package
+        run: |
+          pyinstaller --onefile fifadsconv.py
+        shell: cmd
+      - name: Publish
+        uses: actions/upload-artifact@v2
+        with:
+          path: dist
+          name: fifadsconv-Windows
+
+  macos:
+    runs-on: macos-11
+    name: Build macOS
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install pyinstaller
+        run: |
+          python3 -m pip install -r requirements.txt
+      - name: Create package
+        run: |
+          pyinstaller --onefile fifadsconv.py
+      - name: Publish
+        uses: actions/upload-artifact@v2
+        with:
+          path: dist
+          name: fifadsconv-macOS
+
+  linux:
+    runs-on: ubuntu-latest
+    name: Build Linux
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install pyinstaller
+        run: |
+          pip3 install -r requirements.txt
+      - name: Create package
+        run: |
+          pyinstaller --onefile fifadsconv.py
+      - name: Publish
+        uses: actions/upload-artifact@v2
+        with:
+          path: dist
+          name: fifadsconv-Linux
