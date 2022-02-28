@@ -27,6 +27,9 @@ from PIL import Image
 def tlb2png(args):
     print(args.input.name)
 
+	if not args.output:
+		args.output = args.input.name[:args.input.name.rfind(".")] + ".png"
+
     imageCount = struct.unpack("<H", args.input.read(2))[0]
 
     for image in range(imageCount):

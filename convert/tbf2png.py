@@ -29,6 +29,9 @@ from PIL import Image
 def tbf2png(args):
 	print(args.input.name)
 
+	if not args.output:
+		args.output = args.input.name[:args.input.name.rfind(".")] + ".png"
+
 	# Check file size
 	args.input.seek(0, SEEK_END)
 	size = args.input.tell()
