@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+
+# Requirements:
+# pip3 install pillow
+
 """
 Copyright © 2022 Pk11
 
@@ -20,15 +25,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+import argparse
 import struct
 
 from PIL import Image
 
+
 def tlb2png(args):
     print(args.input.name)
 
-	if not args.output:
-		args.output = args.input.name[:args.input.name.rfind(".")] + ".png"
+    if not args.output:
+        args.output = args.input.name[:args.input.name.rfind(".")] + ".png"
 
     imageCount = struct.unpack("<H", args.input.read(2))[0]
 
@@ -94,3 +101,11 @@ def tlb2png(args):
             img.save(f"{args.output[:args.output.rfind('.')]}-{image}{args.output[args.output.rfind('.'):]}")
         else:
             img.save(args.output)
+
+
+if __name__ == "__main__":
+    tlb2pngarg = argparse.ArgumentParser(description="Converts a TLB file to image(s)")
+    tlb2pngarg.add_argument("input", metavar="in.tlb", type=argparse.FileType("rb"), help="input file")
+    tlb2pngarg.add_argument("--output", "-o", metavar="out.png", type=str, help="output name")
+    tlb2pngarg.add_argument("--alpha", "-a", action="store_true", help="make transparent pixel transparent instead of #FF00FF (may break reverse conversion)")
+    exit(tlb2png(tlb2pngarg.parse_args()))

@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+
+# Requirements:
+# pip3 install pillow
+
 """
 Copyright © 2022 Pk11
 
@@ -20,6 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+import argparse
 import struct
 
 from os.path import basename
@@ -27,20 +33,27 @@ from PIL import Image
 
 
 def png2tbf(args):
-	print(basename(args.input))
+    print(basename(args.input))
 
-	if not args.output:
-		args.output = open(args.input[:args.input.rfind(".")] + ".tbf", "wb")
+    if not args.output:
+        args.output = open(args.input[:args.input.rfind(".")] + ".tbf", "wb")
 
-	with Image.open(args.input) as img:
-		if img.mode != "P":
-			img = img.convert("RGB").quantize(256)
+    with Image.open(args.input) as img:
+        if img.mode != "P":
+            img = img.convert("RGB").quantize(256)
 
-		# Get palette, converted to DS format
-		for i in range(len(img.palette.palette) // 3):
-			r, g, b = [round(x * 31 / 255) & 0x1F for x in img.palette.palette[i * 3:i * 3 + 3]]
-			args.output.write(struct.pack("<H", 1 << 15 | b << 10 | g << 5 | r))
+        # Get palette, converted to DS format
+        for i in range(len(img.palette.palette) // 3):
+            r, g, b = [round(x * 31 / 255) & 0x1F for x in img.palette.palette[i * 3:i * 3 + 3]]
+            args.output.write(struct.pack("<H", 1 << 15 | b << 10 | g << 5 | r))
 
-		# If the image is 128x128, write the image data
-		if img.size == (128, 128):
-			args.output.write(img.tobytes())
+        # If the image is 128x128, write the image data
+        if img.size == (128, 128):
+            args.output.write(img.tobytes())
+
+
+if __name__ == "__main__":
+    png2tbfarg = argparse.ArgumentParser(description="Converts an image to a TBF")
+    png2tbfarg.add_argument("input", metavar="in.png", type=str, help="input image")
+    png2tbfarg.add_argument("--output", "-o", metavar="out.tbf", type=argparse.FileType("wb"), help="output file")
+    exit(png2tbf(png2tbfarg.parse_args()))

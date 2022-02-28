@@ -12,7 +12,6 @@ all submodules are Copyright © 2022 Pk11, MIT license
 
 
 import argparse
-import os
 
 from convert.dst2png import dst2png
 from convert.tlb2png import tlb2png
