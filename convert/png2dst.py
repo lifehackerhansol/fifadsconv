@@ -29,6 +29,9 @@ from PIL import Image
 def png2dst(args):
 	print(basename(args.input))
 
+	if not args.output:
+		args.output = open(args.input[:args.input.rfind(".")] + ".dst", "wb")
+
 	with Image.open(args.input) as img:
 		if img.mode != "P":
 			img = img.convert("RGB").quantize()

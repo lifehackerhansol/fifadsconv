@@ -32,6 +32,9 @@ def dst2png(args):
 		print("Error: Is this really a DST file?")
 		exit()
 
+	if not args.output:
+		args.output = args.input.name[:args.input.name.rfind(".")] + ".png"
+
 	_, _, width, height, colors = struct.unpack("<LLHHH", args.input.read(0xE))
 	bitmapSize = width * height // (2 if colors == 16 else 1)
 

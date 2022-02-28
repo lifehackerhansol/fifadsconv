@@ -29,6 +29,9 @@ from PIL import Image
 def png2tlb(args):
 	print(" ".join([basename(x) for x in args.input]))
 
+	if not args.output:
+		args.output = open(args.input[0][:args.input[0].rfind(".")] + ".tlb", "wb")
+
 	# Image count
 	args.output.write(struct.pack("<H", len(args.input)))
 
