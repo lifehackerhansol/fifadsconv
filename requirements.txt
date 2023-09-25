@@ -1,2 +1,2 @@
 Pillow~=10.0
-pyinstaller~=5.13
+pyinstaller~=6.0
